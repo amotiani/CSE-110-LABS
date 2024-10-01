@@ -11,7 +11,7 @@
     display: inline-block;
     scroll-margin-top: 85px;
 }
-.ucsd-logo{
+.logo-img{
     max-width: 400px;
 }
 .navbar{
@@ -30,7 +30,7 @@
     font-size: 28px;
     background-color: white;
 }
-.section1 p{
+p{
     font-size: 28px;
 }
 .navbar a:hover{
@@ -47,8 +47,8 @@
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     column-gap: 25px;
+    row-gap: 25px;
     text-align: center;
-    
 }
 .item{
     background-color: #182b49;
@@ -56,3 +56,27 @@
     max-height:500px;
     overflow: scroll;
 }
+.img{
+    max-width: 100%;
+}
+@media screen and (max-width: 800px) {
+    a{
+      display: none;
+    }
+    .logo-img{
+        max-width: 75%;
+    }
+    h3{
+        font-size: 24px;
+    }
+    p{
+        font-size: 20px;
+    }
+    .grid-container{
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        column-gap: 25px;
+        row-gap: 25px;
+        text-align: center;
+    }
+  }
