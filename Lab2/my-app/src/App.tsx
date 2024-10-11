@@ -1,8 +1,9 @@
 import { dummyNotesList } from "./constants";
 import './App.css';
-import { ToggleTheme } from "./hooksExercise";
-import React, { SetStateAction, useState } from 'react';
+import React, { SetStateAction, useContext, useState } from 'react';
 import { Label } from "./types";
+import { ThemeContext, themes } from "./themeContext";
+import { ClickCounter } from "./hooksExercise";
 
 interface Note {
   id: number;
@@ -14,6 +15,12 @@ interface Note {
 
 function App() {
 
+  //THEME:
+  const [currentTheme, setCurrentTheme] = useState(themes.light);
+  const toggleTheme = () => {
+    setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
+  };  
+  
   //usestate initialization of: 1) exampleNotesList array using dummy notes list, 2) favoritesList array which contains "id"s of only fav notes
   const [favoritesList, setFavoritesList] = useState<number[]>([]); 
   
@@ -57,8 +64,7 @@ function App() {
   //EDIT:
   const [selectedNote, setSelectedNote] = useState<Note>(initialNote);
   const editNoteHandler = () => {
-    //update note's field which was edited and reflect changes in the notes list 
-    //maybe use useEffect
+    //update note's field which was edited
     
   }
 
@@ -70,6 +76,8 @@ function App() {
   }
 
  return (
+  <ThemeContext.Provider value={currentTheme}>
+
   <div className='app-container'>
   <form className="note-form" onSubmit={createNoteHandler}>
     <div>
@@ -104,14 +112,24 @@ function App() {
     <div><button type="submit">Create Note</button></div>
   </form>
   
-    <div className="notes-grid">
+    <div style={{
+       background: currentTheme.background,
+       color: currentTheme.foreground,
+       padding: "20px",
+     }} className="notes-grid">
        {notes.map((note) => (
-         <div
+         <div style={{
+          background: currentTheme.background,
+          color: currentTheme.foreground,
+        }}
            key={note.id}
            className="note-item">
            <div className="notes-header">
-           <FavoritesFlag favState = {note.favorite} toggleFavoriteChange={checkFav} selectedNote = {note}/>
-           <button onClick={()=>deleteNote(note)}>x</button>
+           <FavoritesFlag favState = {note.favorite} toggleFavoriteChange={checkFav} selectedNote = {note} />
+           <button onClick={()=>deleteNote(note)} style={{
+              background: currentTheme.background,
+              color: currentTheme.foreground,
+            }}>x</button>
           </div>
             <h2 contentEditable="true" onInput={editNoteHandler}> {note.title} </h2>
             <p contentEditable="true"> {note.content} </p>
@@ -119,7 +137,8 @@ function App() {
           </div>
        ))}
      </div>
-  <ToggleTheme/>
+    <button onClick={toggleTheme}> Toggle Theme </button>
+    <ClickCounter />
     <div>
       List of Favorites:
       {/*
@@ -135,7 +154,7 @@ function App() {
       </ul>
      </div>
    </div>
-
+   </ThemeContext.Provider>
  );
 }
 
@@ -164,5 +183,3 @@ export function FavoritesFlag({ favState, selectedNote, toggleFavoriteChange }: 
    </div>
   );
 }
-
- 
