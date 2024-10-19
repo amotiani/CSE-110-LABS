@@ -1,25 +1,27 @@
 import { dummyNotesList } from "./constants";
 import './App.css';
-import React, { useState } from 'react';
+import React, { SetStateAction, useContext, useState } from 'react';
 import { Label } from "./types";
 import { ThemeContext, themes } from "./themeContext";
 import { ClickCounter } from "./hooksExercise";
 
 interface Note {
-  id: number;
-  title: string;
-  content: string;
-  label: Label;
-  favorite: string;
+    id: number;
+    title: string;
+    content: string;
+    label: Label;
+    favorite: string;
 }
 
-function App() {
 
-  //THEME:
-  const [currentTheme, setCurrentTheme] = useState(themes.light);
-  const toggleTheme = () => {
-    setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
-  };  
+export const StickyNotes = () => {
+    // your code from App.tsx
+    
+    //THEME:
+    const [currentTheme, setCurrentTheme] = useState(themes.light);
+    const toggleTheme = () => {
+        setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
+    };  
   
   //usestate initialization of: 1) exampleNotesList array using dummy notes list, 2) favoritesList array which contains "id"s of only fav notes
   const [favoritesList, setFavoritesList] = useState<number[]>([]); 
@@ -91,6 +93,7 @@ function App() {
 
     <div>
       <textarea
+        placeholder="Note Content"
         onChange={(event) =>
           setCreateNote({ ...createNote, content: event.target.value })}
         required>
@@ -123,15 +126,17 @@ function App() {
           color: currentTheme.foreground,
         }}
            key={note.id}
-           className="note-item">
+           className="note-item"
+           data-testid="note-item"
+           >
            <div className="notes-header">
            <FavoritesFlag favState = {note.favorite} toggleFavoriteChange={checkFav} selectedNote = {note} />
-           <button onClick={()=>deleteNote(note)} style={{
+           <button data-testid="deleteNoteButton" onClick={()=>deleteNote(note)} style={{
               background: currentTheme.background,
               color: currentTheme.foreground,
             }}>x</button>
           </div>
-            <h2 contentEditable="true" onInput={editNoteHandler}> {note.title} </h2>
+            <h2 contentEditable="true" data-testid="edit" onInput={editNoteHandler}> {note.title} </h2>
             <p contentEditable="true"> {note.content} </p>
             <p contentEditable="true"> {note.label} </p>
           </div>
@@ -158,28 +163,26 @@ function App() {
  );
 }
 
-export default App;
-
 interface FavFlagsInterface {
-  favState: string;
-  selectedNote: Note;
-  toggleFavoriteChange: (note: Note) => void;
-}
-
-//Fav List Update Function updates the List of favs dynamically
-export function FavoritesFlag({ favState, selectedNote, toggleFavoriteChange }: FavFlagsInterface) {
-  const [like, setLike] = useState(favState);
-
-  const toggleLike = () => {
-    setLike(like === '♡' ? '❤️' : '♡');
-    toggleFavoriteChange(selectedNote);
-  };
+    favState: string;
+    selectedNote: Note;
+    toggleFavoriteChange: (note: Note) => void;
+  }
   
-  return (
-    <div>
-    <button onClick={toggleLike}>
-        {like}
-      </button>
-   </div>
-  );
-}
+  //Fav List Update Function updates the List of favs dynamically
+  function FavoritesFlag({ favState, selectedNote, toggleFavoriteChange }: FavFlagsInterface) {
+    const [like, setLike] = useState(favState);
+  
+    const toggleLike = () => {
+      setLike(like === '♡' ? '❤️' : '♡');
+      toggleFavoriteChange(selectedNote);
+    };
+    
+    return (
+      <div>
+      <button onClick={toggleLike}>
+          {like}
+        </button>
+     </div>
+    );
+  }
