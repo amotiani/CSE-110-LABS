@@ -33,10 +33,19 @@ describe("Create StickyNote", () => {
  })
 
  //READ
- test("all created notes displayed on the page", () => {
-    render(<StickyNotes />);
-    const notes = screen.getAllByTestId("note-item")
-    expect(notes.length).toBe(dummyNotesList.length);
+ test("all the created notes displayed on the page", () => {
+   render(<StickyNotes />);
+
+   const createNoteTitleInput = screen.getByPlaceholderText("Note Title");
+   const createNoteButton = screen.getByText("Create Note");
+   const createNoteContentTextarea = screen.getByPlaceholderText("Note Content");
+
+   fireEvent.change(createNoteTitleInput, { target: { value: "New Note" } });
+   fireEvent.change(createNoteContentTextarea, {target: { value: "Note content" }});
+   fireEvent.click(createNoteButton);
+
+   const notes = screen.getAllByTestId("note-item")
+   expect(notes.length).toBe(dummyNotesList.length+1);
  })
 
  //UPDATE
